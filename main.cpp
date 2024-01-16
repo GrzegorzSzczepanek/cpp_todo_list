@@ -49,6 +49,30 @@ void add_new_task(fs::path& dir_path){
 }
 
 void remove_one_task(fs::path& dir_path){
+    fs::path file_path = dir_path / "saves.txt";
+    /* std::ofstream file(file_path.string(), std::ios_base::app); */
+
+    std::cout << "Write task you'd like to remove:" << std::endl;
+    std::string task_to_remove;
+    std::cin >> task_to_remove;
+
+    std::ifstream file_in(file_path.string());
+    std::string temp_file_path = file_path.string() + "_temp";
+    std::ofstream file_out(temp_file_path);
+
+    std::string line_in_file;
+    while (std::getline(file_in, line_in_file)) {
+        if (line_in_file != task_to_remove) {
+            file_out << line_in_file << "\n";
+        }
+    }
+    file_in.close();
+    file_out.close();
+
+    std::remove(file_path.string().c_str());
+    std::rename(temp_file_path.c_str(), file_path.string().c_str());
+
+
     std::cout << "Task was removed successfully" << std::endl;
 }
 
@@ -67,7 +91,17 @@ void check_tasks(fs::path& dir_path){
     file.close();}
 
 void remove_every_task(fs::path& dir_path){
-    std::cout << "Every task was deleted successfully!" << std::endl;
+    fs::path file_path = dir_path / "saves.txt";
+    std::ofstream file(file_path.string(), std::ios_base::app);
+
+    std::ofstream file_to_clear(file_path.string(), std::ios::out | std::ios::trunc);
+    if (file_to_clear.is_open()) {
+        std::cout << "Every task was deleted successfully!" << std::endl;
+    } else {
+        std::cout << "Failed to open the file" << std::endl;
+    }
+    file_to_clear.close();
+
 }
 
 void quit_the_app(fs::path& dir_path) {
@@ -76,7 +110,7 @@ void quit_the_app(fs::path& dir_path) {
 }
 
 void main_interface() {
-    std::cout << "-----------------------" << std::endl;
+    std::cout << "\n\n\n-----------------------" << std::endl;
     std::cout << "What do you want to do?" << std::endl;
     std::cout << "a) Check tasks" << std::endl;
     std::cout << "b) Add new task" << std::endl;
@@ -94,6 +128,7 @@ int main (int argc, char *argv[]) {
         char choice;
         main_interface();
         std::cin >> choice;
+        std::cout << "\n\n\n";
         // Make it lowercase
         choice = std::tolower(choice, std::locale());
         switch (choice) {
