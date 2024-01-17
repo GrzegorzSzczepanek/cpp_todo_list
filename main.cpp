@@ -33,7 +33,8 @@ void generate_save_dir(const fs::path& dir_path) {
 void add_new_task(fs::path& dir_path){
     std::string task;
     std::cout << "Type in your task: ";
-    std::cin >> task;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::getline(std::cin, task);
 
     fs::path file_path = dir_path / "saves.txt";
     std::ofstream file(file_path.string(), std::ios_base::app);
@@ -54,7 +55,8 @@ void remove_one_task(fs::path& dir_path){
 
     std::cout << "Write task you'd like to remove:" << std::endl;
     std::string task_to_remove;
-    std::cin >> task_to_remove;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::getline(std::cin, task_to_remove);
 
     std::ifstream file_in(file_path.string());
     std::string temp_file_path = file_path.string() + "_temp";
@@ -127,6 +129,7 @@ int main (int argc, char *argv[]) {
     while (true) {
         char choice;
         main_interface();
+        std::cout <<  "#> ";
         std::cin >> choice;
         std::cout << "\n\n\n";
         // Make it lowercase
